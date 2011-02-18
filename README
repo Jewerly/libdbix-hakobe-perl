@@ -24,7 +24,7 @@ DBIx::Hakobe is a wrapper class for DBI package. It keeps
 single database connection as singleton instance for it and
 its inheritor classes.
 
-    package Tickets;
+    package Tables;
     use parent qw(DBIx::Hakobe);
     
     PACKAGE->make_table(
@@ -34,16 +34,16 @@ its inheritor classes.
         ],
     );
     
-    Tickets->connect('dbi:SQLite:dbname=example.db', undef, undef);
-    Tickets->execute(q{CREATE TABLE IF NOT EXISTS tikets (requestor, status)});
-    Tickets->new({requestor => 'inna', status => 'requested'})->save;
-    my $row = Tickets->find(sub{
+    Tables->connect('dbi:SQLite:dbname=example.db', undef, undef);
+    Tables->execute(q{CREATE TABLE IF NOT EXISTS tikets (requestor, status)});
+    Tables::Tickets->new({requestor => 'inna', status => 'requested'})->save;
+    my $row = Tables::Tickets->find(sub{
         $_->filter('requestor =', 'inna');
         $_->filter('status <>', 'completed');
     })->[0] or croak 'cannot found inna';
     $row->status('reviewed');
     $row->save;
-    Tickets->disconnect;
+    Tables::Tickets->disconnect;
 
 INSTALLATION
 
