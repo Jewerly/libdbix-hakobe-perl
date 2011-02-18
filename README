@@ -1,0 +1,66 @@
+DBIx-Hakobe version 0.001
+
+This module a set of a SQL composer DBIx::Hakobe::Query and
+a DBI connector DBIx::Hakobe used it. Query was inspired by
+Google App Engine's python datastore Query intefaces. 
+Unlike SQL::Abstract, relational operators must appear at the
+end of key for key-value pairs.
+
+For examples, you could get same result as following:
+
+    my $query = DBIx::Hakobe::Query->select_from(['*'], 'tickets');
+    $query->filter('requestor =', 'inna');
+    $query->filter('status <>', 'completed');
+    my($stmt, @bind) = $query->statement;
+
+Corresponding to SQL::Abstract version:
+
+    my($stmt, @bind) = $sql->select('tikets', '*', {
+        requestor => 'inna',
+        status => {'!=', 'completed'},
+    });
+
+DBIx::Hakobe is a wrapper class for DBI package. It keeps
+single database connection as singleton instance for it and
+its inheritor classes.
+
+    package Tickets;
+    use parent qw(DBIx::Hakobe);
+    
+    PACKAGE->make_table(
+        'tickets', [
+            'requestor',
+            'status',
+        ],
+    );
+    
+    Tickets->connect('dbi:SQLite:dbname=example.db', undef, undef);
+    Tickets->execute(q{CREATE TABLE IF NOT EXISTS tikets (requestor, status)});
+    Tickets->new({requestor => 'inna', status => 'requested'})->save;
+    my $row = Tickets->find(sub{
+        $_->filter('requestor =', 'inna');
+        $_->filter('status <>', 'completed');
+    })->[0] or croak 'cannot found inna';
+    $row->status('reviewed');
+    $row->save;
+    Tickets->disconnect;
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Makefile.PL
+	make
+	make test
+	make install
+
+DEPENDENCIES
+
+L<DBI>
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2011, MIZUTANI Tociyuki
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
