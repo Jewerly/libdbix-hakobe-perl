@@ -43,7 +43,7 @@ its inheritor classes.
     })->[0] or croak 'cannot found inna';
     $row->status('reviewed');
     $row->save;
-    Tables::Tickets->disconnect;
+    Tables->disconnect;
 
 INSTALLATION
 

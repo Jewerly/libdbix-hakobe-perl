@@ -617,11 +617,11 @@ sub{
     $_->set('word', [':w', 'quick']);
     $_->set('category', [':c', 'good']);
     $_->set('count', [
-        '(SELECT ifnull(count,0)+1 FROM bayes WHERE word = :w AND category = :c)'
+        'ifnull((SELECT count FROM bayes WHERE word = :w AND category = :c),0)+1'
     ]);
 }
 --- stmt
-'INSERT OR REPLACE INTO bayes (word, category, count) VALUES(:w, :c, (SELECT ifnull(count,0)+1 FROM bayes WHERE word = :w AND category = :c))'
+'INSERT OR REPLACE INTO bayes (word, category, count) VALUES(:w, :c, ifnull((SELECT count FROM bayes WHERE word = :w AND category = :c),0)+1)'
 --- binds
 ['quick', 'good']
 
@@ -686,11 +686,11 @@ sub{
     $_->set('word', [':w', 'quick']);
     $_->set('category', [':c', 'good']);
     $_->set('count', [
-        '(SELECT ifnull(count,0)+1 FROM bayes WHERE word = :w AND category = :c)'
+        'ifnull((SELECT count FROM bayes WHERE word = :w AND category = :c),0)+1'
     ]);
 }
 --- stmt
-'REPLACE INTO bayes (word, category, count) VALUES(:w, :c, (SELECT ifnull(count,0)+1 FROM bayes WHERE word = :w AND category = :c))'
+'REPLACE INTO bayes (word, category, count) VALUES(:w, :c, ifnull((SELECT count FROM bayes WHERE word = :w AND category = :c),0)+1)'
 --- binds
 ['quick', 'good']
 

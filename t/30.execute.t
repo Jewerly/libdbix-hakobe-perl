@@ -99,7 +99,7 @@ plan tests => 20;
             params => [map { $_->bound_params } @{$history}],
         }, spec;
 
-    it 'should return with fetchrow_arrayref.';
+    it 'should return with fetchall_arrayref.';
 
         $stmt = 'SELECT * FROM planet';
         $class->dbh->{mock_add_resultset} = {
